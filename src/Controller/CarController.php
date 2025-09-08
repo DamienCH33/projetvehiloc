@@ -14,8 +14,8 @@ final class CarController extends AbstractController
     {
         $cars = $carRepository->findAll();
 
-        return $this->render('car/index.html.twig', [
-            'cars' => '$cars',
+        return $this->render('car/home.html.twig', [
+            'cars' => $cars,
         ]);
     }
 }
