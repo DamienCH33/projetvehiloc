@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\CarRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -12,7 +14,7 @@ final class CarController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(CarRepository $carRepository): Response
     {
-        $cars = $carRepository->findBy([], ['daily_price' => 'ASC'],5);
+        $cars = $carRepository->findBy([], ['dailyPrice' => 'ASC'],5);
 
         return $this->render('home.html.twig', [
             'cars' => $cars,
@@ -31,4 +33,19 @@ final class CarController extends AbstractController
             'car' => $car,
         ]);
     }
+
+    #[Route(path:'/car/{id}/delete', name:'app_delete_car', requirements:['id' => '\d+'],methods: ['POST'])]
+    public function deleteCar(Request $request, int $id, CarRepository $carRepository, EntityManagerInterface $delete): Response
+    {
+        $car = $carRepository->find($id);
+
+        if (!$car) {
+        throw $this->createNotFoundException("La voiture avec l'ID $id n'existe pas.");
+        }
+        $delete->remove($car);
+        $delete->flush();
+
+        return $this->redirectToRoute('app_home');
+    }
+
 }

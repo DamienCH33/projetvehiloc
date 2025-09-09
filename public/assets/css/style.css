@@ -195,7 +195,16 @@ p.price-per-month {
     font-weight: 400;
     font-family: 'Anton', sans-serif;
 }
+button {
+    border: none;       /* supprime la bordure */
+    background: none;   /* supprime le fond */
+    padding: 0;         /* supprime le padding */
+    cursor: pointer;    /* change le curseur au survol */
+}
 
+button img {
+    display: block;     /* enlève le petit espace sous l'image */
+}
 section#promises {
     display: flex;
     align-items: center;
