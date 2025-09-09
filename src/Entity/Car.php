@@ -102,7 +102,7 @@ class Car
         return $this->isManual;
     }
 
-    public function setManual(bool $isManual): static
+    public function setIsManual(bool $isManual): static
     {
         $this->isManual = $isManual;
 
