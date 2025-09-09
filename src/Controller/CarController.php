@@ -16,7 +16,7 @@ final class CarController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(CarRepository $carRepository): Response
     {
-        $cars = $carRepository->findBy([], ['dailyPrice' => 'ASC'],5);
+        $cars = $carRepository->findBy([], ['dailyPrice' => 'ASC'], 5);
 
         return $this->render('home.html.twig', [
             'cars' => $cars,
@@ -29,42 +29,47 @@ final class CarController extends AbstractController
         $car = $carRepository->find($id);
 
         if (!$car) {
-            throw $this->createNotFoundException("Cette voiture n'existe pas.");
+            $this->addFlash('danger', "Cette voiture n'existe pas.");
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('carDetail.html.twig', [
             'car' => $car,
         ]);
     }
 
-    #[Route(path:'/car/{id}/delete', name:'app_delete_car', requirements:['id' => '\d+'],methods: ['POST'])]
+    #[Route(path: '/car/{id}/delete', name: 'app_delete_car', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function deleteCar(Request $request, int $id, CarRepository $carRepository, EntityManagerInterface $delete): Response
     {
         $car = $carRepository->find($id);
 
         if (!$car) {
-        throw $this->createNotFoundException("La voiture avec l'ID $id n'existe pas.");
+            $this->addFlash('danger', "La voiture avec l'ID $id n'existe pas.");
+            return $this->redirectToRoute('app_home');
         }
         $delete->remove($car);
         $delete->flush();
 
+        $this->addFlash('success', "La voiture a bien été supprimée.");
         return $this->redirectToRoute('app_home');
     }
-    
-    #[Route(path:'/car/add', name:'app_add_car',methods:['GET', 'POST'])]
+
+    #[Route(path: '/car/add', name: 'app_add_car', methods: ['GET', 'POST'])]
     public function addCar(Request $request, EntityManagerInterface $manager): Response
     {
         $car = new Car();
         $form = $this->createForm(CarType::class, $car);
 
         $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid()){
-                $manager->persist($car);
-                $manager->flush();
-            
-        return $this->redirectToRoute('app_detail_car', ['id' => $car->getId()]);}
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->persist($car);
+            $manager->flush();
 
-         return $this->render('newCar.html.twig', [
-        'form' => $form->createView(),
-    ]);
+            $this->addFlash('success', "La voiture a bien été ajoutée.");
+            return $this->redirectToRoute('app_detail_car', ['id' => $car->getId()]);
+        }
+
+        return $this->render('newCar.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
