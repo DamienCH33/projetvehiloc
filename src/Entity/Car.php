@@ -17,19 +17,19 @@ class Car
     #[ORM\Column('name', length: 255)]
     private ?string $name = null;
 
-   #[ORM\Column(type: Types::TEXT)]
+   #[ORM\Column('description',type: Types::TEXT)]
     private ?string $description = null;    
 
     #[ORM\Column('daily_price')]
-    private ?float $daily_price = null;
+    private ?float $dailyPrice = null;
 
-    #[ORM\Column]
-    private ?float $monthly_price = null;
+    #[ORM\Column('monthly_price')]
+    private ?float $monthlyPrice = null;
 
-    #[ORM\Column]
+    #[ORM\Column ('places')]
     private ?int $places = null;
 
-   #[ORM\Column(type: "boolean", options: ["default" => 0])]
+   #[ORM\Column('is_manual',type: "boolean", options: ["default" => 0])]
     private ?bool $isManual = null; 
 
     public function getId(): ?int
@@ -63,24 +63,24 @@ class Car
 
     public function getDailyPrice(): ?float
     {
-        return $this->daily_price;
+        return $this->dailyPrice;
     }
 
-    public function setDailyPrice(float $daily_price): static
+    public function setDailyPrice(float $dailyPrice): static
     {
-        $this->daily_price = $daily_price;
+        $this->dailyPrice = $dailyPrice;
 
         return $this;
     }
 
     public function getMonthlyPrice(): ?float
     {
-        return $this->monthly_price;
+        return $this->monthlyPrice ;
     }
 
-    public function setMonthlyPrice(float $monthly_price): static
+    public function setMonthlyPrice(float $monthlyPrice ): static
     {
-        $this->monthly_price = $monthly_price;
+        $this->monthlyPrice  = $monthlyPrice ;
 
         return $this;
     }
